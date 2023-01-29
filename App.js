@@ -1,8 +1,13 @@
-import { StyleSheet } from "react-native";
+import { Fragment } from "react";
+import { StatusBar, StyleSheet } from "react-native";
 import CategoriesScreen from "./screens/CategoriesScreen";
-
 export default function App() {
-  return <CategoriesScreen />;
+  return (
+    <Fragment>
+      <StatusBar style="light" />                         
+      <CategoriesScreen />
+    </Fragment>
+  );
 }
 
 const styles = StyleSheet.create({
