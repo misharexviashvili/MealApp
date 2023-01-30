@@ -7,7 +7,17 @@ export default function MealsOverviewScreen({ route }) {
     return mealItem.categoryIds.indexOf(catId) >= 0;
   });
   function renderMealItem(itemData) {
-    return <MealItem title={itemData.item.title} />;
+    // Shorthand for itemData.item to not repeat that everyitme
+    const item = itemData.item;
+    // Too many props for <MealItem/>, therefore I created helper cosnt with all the props
+    const mealItemProps = {
+      title: item.title,
+      imageUrl: item.imageUrl,
+      affordability: item.affordability,
+      duration: item.duration,
+      complexity: item.complexity,
+    };
+    return <MealItem {...mealItemProps} />;
   }
   return (
     <View style={styles.container}>
