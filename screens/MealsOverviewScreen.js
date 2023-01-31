@@ -21,6 +21,7 @@ export default function MealsOverviewScreen({ route, navigation }) {
     const item = itemData.item;
     // Too many props for <MealItem/>, therefore I created helper cosnt with all the props
     const mealItemProps = {
+      id: item.id,
       title: item.title,
       imageUrl: item.imageUrl,
       affordability: item.affordability,
