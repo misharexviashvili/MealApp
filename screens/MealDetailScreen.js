@@ -1,40 +1,50 @@
-import { useContext, useLayoutEffect } from "react";
+import { useLayoutEffect } from "react";
 import { Image, Text, View, StyleSheet, ScrollView } from "react-native";
 import IconButton from "../components/IconButton";
 import List from "../components/mealDetail/List";
 import Subtitle from "../components/mealDetail/Subtitle";
 import MealDetails from "../components/MealDetails";
 import { MEALS } from "../data/dummy-data";
-import { FavoritesContext } from "../store/context/favorite-context";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { addFavorite, removeFavorite } from "../store/redux/favorties";
+function MealDetailScreen({ route, navigation }) {
+  // const favoriteMealsCtx = useContext(FavoritesContext);
+  const favoriteMealIds = useSelector((state) => state.favoriteMeals.ids);
+  const dispatch = useDispatch();
 
-export default function MealDetailScreen({ navigation, route }) {
-  const favoriteMealsCtx = useContext(FavoritesContext);
   const mealId = route.params.mealId;
   const selectedMeal = MEALS.find((meal) => meal.id === mealId);
-  const mealIsFavorite = favoriteMealsCtx.ids.includes(mealId);
+
+  const mealIsFavorite = favoriteMealIds.includes(mealId);
+
   function changeFavoriteStatusHandler() {
     if (mealIsFavorite) {
-      favoriteMealsCtx.removeFavorite(mealId);
+      // favoriteMealsCtx.removeFavorite(mealId);
+      dispatch(removeFavorite({ id: mealId }));
     } else {
-      favoriteMealsCtx.addFavorite(mealId);
+      // favoriteMealsCtx.addFavorite(mealId);
+      dispatch(addFavorite({ id: mealId }));
     }
   }
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => {
         return (
           <IconButton
             icon={mealIsFavorite ? "star" : "star-outline"}
-            color="yellow"
+            color="white"
             onPress={changeFavoriteStatusHandler}
           />
         );
       },
     });
   }, [navigation, changeFavoriteStatusHandler]);
+
   return (
     <ScrollView style={styles.rootContainer}>
-      <Image source={{ uri: selectedMeal.imageUrl }} style={styles.image} />
+      <Image style={styles.image} source={{ uri: selectedMeal.imageUrl }} />
       <Text style={styles.title}>{selectedMeal.title}</Text>
       <MealDetails
         duration={selectedMeal.duration}
@@ -44,7 +54,7 @@ export default function MealDetailScreen({ navigation, route }) {
       />
       <View style={styles.listOuterContainer}>
         <View style={styles.listContainer}>
-          <Subtitle>ingredients</Subtitle>
+          <Subtitle>Ingredients</Subtitle>
           <List data={selectedMeal.ingredients} />
           <Subtitle>Steps</Subtitle>
           <List data={selectedMeal.steps} />
@@ -53,6 +63,8 @@ export default function MealDetailScreen({ navigation, route }) {
     </ScrollView>
   );
 }
+
+export default MealDetailScreen;
 
 const styles = StyleSheet.create({
   rootContainer: {
